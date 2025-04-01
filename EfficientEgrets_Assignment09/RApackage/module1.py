@@ -19,11 +19,11 @@ class DatabaseConnector:
     def __init__(self):
         # Connection string stored inside the class
         self.connection_string = (
-            "DRIVER={SQL Server};"
-            "SERVER=your_server_address;"
-            "DATABASE=your_database_name;"
-            "UID=your_username;"
-            "PWD=your_password"
+            'Driver={SQL Server};'
+            'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
+            'Database=IS4010;'
+            'uid=IS4010Login;'
+            'pwd=P@ssword2;'
         )
         self.conn = None
 
