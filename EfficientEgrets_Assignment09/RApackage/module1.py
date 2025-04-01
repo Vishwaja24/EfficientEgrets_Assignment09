@@ -59,7 +59,7 @@ class ProductManager:
 
     def fetch_products(self):
         """Fetches all products from the tProduct table."""
-        query = "SELECT ProductID, [UPC-A ], Description, ManufacturerID, BrandID FROM tProduct"
+        query = "SELECT ProductID, [UPC-A ], Description, ManufacturerID, BrandID FROM dbo.tProduct"
         results = self.db_connector.execute_query(query)
         
         products = [
@@ -93,5 +93,3 @@ class ProductManager:
         print(f"Brand ID: {brand_id}")
 
         return product_id, description, manufacturer_id, brand_id
-
-
