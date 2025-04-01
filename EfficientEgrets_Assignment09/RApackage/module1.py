@@ -9,87 +9,57 @@
 # Brief Description of what this module does: This module shows us how to create code in order to access our SQL Server 
 # Citations: RealPython(https://realpython.com/), W3Schools(https://www.w3schools.com/)
 
-#module1.py 
+#module1.py
+
 import pyodbc
 import random
 
-class DatabaseConnector:
-    """Handles database connection and queries with a built-in connection string."""
+# Function to establish a connection to the SQL Server
+def connect_to_sql_server():
+    # Replace with your actual SQL Server details
+    conn = pyodbc.connect('Driver={SQL Server};'
+                          'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
+                          'Database=GroceryStoreSimulator;'
+                          'uid=IS4010Login;'
+                          'pwd=P@ssword2;')
+    return conn
+
+# Function to run the query for Question 1 and return the results
+def get_product_data():
+    conn = connect_to_sql_server()
+    cursor = conn.cursor()
     
-    def __init__(self):
-        # Connection string stored inside the class
-        self.connection_string = (
-            'Driver={SQL Server};'
-            'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
-            'Database=IS4010;'
-            'uid=IS4010Login;'
-            'pwd=P@ssword2;'
-        )
-        self.conn = None
+    query = """
+    SELECT ProductID, [UPC-A], Description, ManufacturerID, BrandID 
+    FROM dbo.tProduct
 
-    def connect(self):
-        """Establishes a connection to the SQL Server."""
-        try:
-            self.conn = pyodbc.connect(self.connection_string)
-        except Exception as e:
-            print("Error connecting to database:", e)
-            self.conn = None
-
-    def execute_query(self, query):
-        """Executes a SELECT query and returns results."""
-        if not self.conn:
-            print("Database connection not established.")
-            return []
-        
-        cursor = self.conn.cursor()
-        cursor.execute(query)
-        results = cursor.fetchall()
-        return results
-
-    def close_connection(self):
-        """Closes the database connection."""
-        if self.conn:
-            self.conn.close()
-
-class ProductManager:
-    """Handles fetching and selecting a random product."""
+    """
+    cursor.execute(query)
+    results = cursor.fetchall()
     
-    def __init__(self, db_connector):
-        self.db_connector = db_connector
+    # Convert to a list of dictionaries for easier access
+    products = []
+    for row in results:
+        products.append({
+            'ProductID': row.ProductID,
+            'UPC-A': row[1],  # Assuming the second column is UPC-A
+            'Description': row.Description,
+            'ManufacturerID': row.ManufacturerID,
+            'BrandID': row.BrandID
+        })
+    
+    cursor.close()
+    conn.close()
+    
+    return products
 
-    def fetch_products(self):
-        """Fetches all products from the tProduct table."""
-        query = "SELECT ProductID, [UPC-A ], Description, ManufacturerID, BrandID FROM dbo.tProduct"
-        results = self.db_connector.execute_query(query)
-        
-        products = [
-            {
-                "ProductID": row[0],
-                "Description": row[2],  
-                "ManufacturerID": row[3],
-                "BrandID": row[4]
-            }
-            for row in results
-        ]
-        return products
-
-    def select_random_product(self, products):
-        """Randomly selects one product from the list and prints details."""
-        if not products:
-            print("No products found.")
-            return None
-
-        selected_product = random.choice(products)
-
-        product_id = selected_product["ProductID"]
-        description = selected_product["Description"]
-        manufacturer_id = selected_product["ManufacturerID"]
-        brand_id = selected_product["BrandID"]
-
-        print("\nRandomly Selected Product:")
-        print(f"Product ID: {product_id}")
-        print(f"Description: {description}")
-        print(f"Manufacturer ID: {manufacturer_id}")
-        print(f"Brand ID: {brand_id}")
-
-        return product_id, description, manufacturer_id, brand_id
+# Function to randomly select one row and return relevant information
+def select_random_product(products):
+    selected_product = random.choice(products)
+    
+    product_id = selected_product['ProductID']
+    description = selected_product['Description']
+    manufacturer_id = selected_product['ManufacturerID']
+    brand_id = selected_product['BrandID']
+    
+    return product_id, description, manufacturer_id, brand_id

@@ -1,20 +1,13 @@
 #main.py
 
-from RApackage.module1 import *  # Replace with actual module name
+# main.py
+from RApackage.module1 import *
 
-# Initialize database connection
-db_connector = DatabaseConnector()
-db_connector.connect()
+# Step 1: Retrieve product data
+products = get_product_data()
 
-# Initialize ProductManager
-product_manager = ProductManager(db_connector)
+# Step 2: Randomly select one product and store its details
+product_id, description, manufacturer_id, brand_id = select_random_product(products)
 
-# Step 1: Fetch products
-product_list = product_manager.fetch_products()
-
-# Step 2: Select a random product
-if product_list:
-    product_manager.select_random_product(product_list)
-
-# Close the database connection
-db_connector.close_connection()
+# Print the details for debugging (optional)
+print(f"ProductID: {product_id}, Description: {description}, ManufacturerID: {manufacturer_id}, BrandID: {brand_id}")
