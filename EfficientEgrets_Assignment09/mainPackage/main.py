@@ -1,6 +1,6 @@
 # File Name : EfficientEgrets_Assignment09
 # Student Name: Rithu Aynampudi, Vishwaja Painjane, Will Claus
-# email: aynampru@mail.uc.edu, painjavv@mail.uc.edu
+# email: aynampru@mail.uc.edu, painjavv@mail.uc.edu, clausws@mail.uc.edu
 # Assignment Number: Assignment09
 # Due Date: April 3rd, 2025
 # Course #/Section: IS4010-001
@@ -11,8 +11,12 @@
 
 #main.py
 
+# if __name__ == "__main__":
+    # main()
 from RApackage.module1 import *
 from VPpackage.module2 import *
+from WCpackage.module3 import *
+
 
 # Step 1: Retrieve product data
 products = get_product_data()
@@ -30,3 +34,48 @@ manufacturer = get_manufacturer_name(manufacturer_id)
 # Step 5: Get brand name
 brand = get_brand_name(brand_id)
 print(f"Manufacturer: {manufacturer}, Brand: {brand}")
+
+# Step 6: 
+def main():
+    # Get product data
+    products = get_product_data()
+    
+    # Randomly select a product
+    product_id, description, manufacturer_id, brand_id = select_random_product(products)
+    
+    # Get the total number of items sold for this product
+    number_of_items_sold = get_items_sold_for_product(product_id)
+    
+    # Print the result
+    print(f"Product Description: {description}")
+    print(f"Manufacturer ID: {manufacturer_id}")
+    print(f"Brand ID: {brand_id}")
+    print(f"Total items sold for Product ID {product_id}: {number_of_items_sold}")
+
+if __name__ == "__main__":
+    main()
+
+
+
+# Step 7: 
+def main():
+    # Get product data
+    products = get_product_data()
+    
+    # Randomly select a product
+    product_id, description, manufacturer_id, brand_id = select_random_product(products)
+    
+    # Get the total number of items sold for this product
+    number_of_items_sold = get_items_sold_for_product(product_id)
+    
+    manufacturer_name = "Acme Corp"  
+    brand_name = "SuperBrand"        
+    
+    # Build the grammatically correct sentence
+    sentence = (f"The product '{description}' from {manufacturer_name} "
+                f"and brand {brand_name} has sold {number_of_items_sold} units.")
+    
+    print(sentence)
+
+if __name__ == "__main__":
+    main()
