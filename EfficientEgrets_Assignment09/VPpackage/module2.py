@@ -1,4 +1,4 @@
-# File Name : EfficientEgrets_Assignment09
+# File Name : module2.py
 # Student Name: Vishwaja Painjane
 # email: painjavv@mail.uc.edu
 # Assignment Number: Assignment09
@@ -13,45 +13,40 @@
 
 from RApackage.module1 import connect_to_sql_server
 
-def get_manufacturer_name(manufacturer_id):
-    """
-    Function to get the manufacturer name using the manufacturer ID
-    """
-    conn = connect_to_sql_server()
-    cursor = conn.cursor()
-    
-    query = f"""
-    SELECT Manufacturer FROM tManufacturer WHERE ManufacturerID = {manufacturer_id}
-    """
-    
-    cursor.execute(query)
-    result = cursor.fetchone()
-    
-    manufacturer_name = result[0] if result else "Unknown Manufacturer"
-    
-    cursor.close()
-    conn.close()
-    
-    return manufacturer_name
 
-def get_brand_name(brand_id):
-    """
-    Function to get the brand name using the brand ID
-    """
-    conn = connect_to_sql_server()
-    cursor = conn.cursor()
-    
-    query = f"""
-    SELECT Brand FROM tBrand WHERE BrandID = {brand_id}
-    """
-    
-    cursor.execute(query)
-    result = cursor.fetchone()
-    
-    brand_name = result[0] if result else "Unknown Brand"
-    
-    cursor.close()
-    conn.close()
-    
-    return brand_name
+class DatabaseOperations:
+    def __init__(self):
+        self.conn = connect_to_sql_server()
+        self.cursor = self.conn.cursor()
+
+    def __del__(self):
+        self.cursor.close()
+        self.conn.close()
+
+    def get_manufacturer_name(self, manufacturer_id):
+        """
+        Method to get the manufacturer name using the manufacturer ID
+        """
+        query = f"""
+        SELECT Manufacturer FROM tManufacturer WHERE ManufacturerID = {manufacturer_id}
+        """
+        
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        
+        return result[0] if result else "Unknown Manufacturer"
+
+    def get_brand_name(self, brand_id):
+        """
+        Method to get the brand name using the brand ID
+        """
+        query = f"""
+        SELECT Brand FROM tBrand WHERE BrandID = {brand_id}
+        """
+        
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        
+        return result[0] if result else "Unknown Brand"
+
 

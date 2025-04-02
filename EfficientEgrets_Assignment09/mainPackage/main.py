@@ -1,4 +1,4 @@
-# File Name : EfficientEgrets_Assignment09
+# File Name : main.py
 # Student Name: Rithu Aynampudi, Vishwaja Painjane, Will Claus
 # email: aynampru@mail.uc.edu, painjavv@mail.uc.edu, clausws@mail.uc.edu
 # Assignment Number: Assignment09
@@ -11,8 +11,7 @@
 
 #main.py
 
-# if __name__ == "__main__":
-    # main()
+
 from RApackage.module1 import *
 from VPpackage.module2 import *
 from WCpackage.module3 import *
@@ -24,16 +23,22 @@ products = get_product_data()
 # Step 2: Randomly select one product and store its details
 product_id, description, manufacturer_id, brand_id = select_random_product(products)
 
-# Print the details for debugging (optional)
 print(f"ProductID: {product_id}, Description: {description}, ManufacturerID: {manufacturer_id}, BrandID: {brand_id}")
 
 
 # Step 3 & 4: Get manufacturer name
-manufacturer = get_manufacturer_name(manufacturer_id)
+db_operations = DatabaseOperations()
+manufacturer = db_operations.get_manufacturer_name(manufacturer_id)
+
 
 # Step 5: Get brand name
-brand = get_brand_name(brand_id)
+db_operations = DatabaseOperations()
+
+manufacturer = db_operations.get_manufacturer_name(manufacturer_id)
+brand = db_operations.get_brand_name(brand_id)
+
 print(f"Manufacturer: {manufacturer}, Brand: {brand}")
+
 
 # Step 6: 
 def main():

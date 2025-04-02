@@ -1,4 +1,4 @@
-# File Name : EfficientEgrets_Assignment09
+# File Name : module1.py
 # Student Name: Rithu Aynampudi
 # email: aynampru@mail.uc.edu
 # Assignment Number: Assignment09
@@ -14,9 +14,9 @@
 import pyodbc
 import random
 
-# Function to establish a connection to the SQL Server
+
 def connect_to_sql_server():
-    # Replace with your actual SQL Server details
+  
     conn = pyodbc.connect('Driver={SQL Server};'
                           'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
                           'Database=GroceryStoreSimulator;'
@@ -24,7 +24,10 @@ def connect_to_sql_server():
                           'pwd=P@ssword2;')
     return conn
 
-# Function to run the query for Question 1 and return the results
+class ProductManager: 
+    def __init__(self, db): 
+        self.db = db 
+
 def get_product_data():
     conn = connect_to_sql_server()
     cursor = conn.cursor()
