@@ -1,110 +1,96 @@
+# File Name : EfficientEgrets_Assignment09
+# Student Name: Will Claus
+# email: clausws@mail.uc.edu
+# Assignment Number: Assignment09
+# Due Date: April 3rd, 2025
+# Course #/Section: IS4010-001
+# Semester/Year: Spring 2025
+# Brief Description of the assignment: We are mixing sql and python in order to create data using our SQl instances
+# Brief Description of what this module does: This module shows us how to create code in order to access our SQL Server 
+# Citations: RealPython(https://realpython.com/), W3Schools(https://www.w3schools.com/)
+
 # module3.py
 
 import pyodbc
+import random
+from RApackage.module1 import *
 
-class Module3:
-    def connect_to_database(self):
-        """
-        Connect to our SQL server database
-        @return the connection object or None failure
-        """
-        try:
-            conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
-                      'Database=IS4010;'
-                      'uid=IS4010Login;'
-                      'pwd=P@ssword2;')
-        except:
-            # What do we do if we end up here?
-            # print("Unable to connect to database") # Probably not wise
-            return None
-        return conn
+def connect_to_sql_server():
+    # Replace with your actual SQL Server details
+    conn = pyodbc.connect('Driver={SQL Server};'
+                          'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
+                          'Database=GroceryStoreSimulator;'
+                          'uid=IS4010Login;'
+                          'pwd=P@ssword2;')
+    return conn
 
-        import pyodbc
-
-class DatabaseConnector:
-    """Handles database connection and queries with a built-in connection string."""
+# Function to run the query for Question 1 and return the results
+def get_product_data():
+    conn = connect_to_sql_server()
+    cursor = conn.cursor()
     
-    def __init__(self):
-        # Connection string stored inside the class
-        self.connection_string = (
-            "DRIVER={SQL Server};"
-            "SERVER=your_server_address;"  # Replace with your server's address
-            "DATABASE=your_database_name;"  # Replace with your database's name
-            "UID=your_username;"  # Replace with your username
-            "PWD=your_password"  # Replace with your password
-        )
-        self.conn = None
-
-    def connect(self):
-        """Establishes a connection to the SQL Server."""
-        try:
-            self.conn = pyodbc.connect(self.connection_string)
-        except Exception as e:
-            print("Error connecting to database:", e)
-            self.conn = None
-
-    def execute_query(self, query, params=None):
-        """Executes a SELECT query and returns results."""
-        if not self.conn:
-            print("Database connection not established.")
-            return []
-        
-        cursor = self.conn.cursor()
-        cursor.execute(query, params)
-        results = cursor.fetchall()
-        return results
-
-    def close_connection(self):
-        """Closes the database connection."""
-        if self.conn:
-            self.conn.close()
-
-class ProductManager:
-    """Handles product-related queries."""
+    query = """
+    SELECT ProductID, [UPC-A], Description, ManufacturerID, BrandID 
+    FROM dbo.tProduct
+    """
+    cursor.execute(query)
+    results = cursor.fetchall()
     
-    def __init__(self, db_connector):
-        self.db_connector = db_connector
+    # Convert to a list of dictionaries for easier access
+    products = []
+    for row in results:
+        products.append({
+            'ProductID': row.ProductID,
+            'UPC-A': row[1],  # Assuming the second column is UPC-A
+            'Description': row.Description,
+            'ManufacturerID': row.ManufacturerID,
+            'BrandID': row.BrandID
+        })
+    cursor.close()
+    conn.close()
 
-    def fetch_total_sold_by_product(self, product_id):
-        """Fetches total quantity sold for a given Product ID."""
-        query = """
-        SELECT TOP (100) PERCENT 
-            SUM(dbo.tTransactionDetail.QtyOfProduct) AS NumberOfItemsSold
-        FROM dbo.tTransactionDetail 
-        INNER JOIN dbo.tTransaction 
-            ON dbo.tTransactionDetail.TransactionID = dbo.tTransaction.TransactionID 
-        WHERE dbo.tTransaction.TransactionTypeID = 1 
-            AND dbo.tTransactionDetail.ProductID = ?
-        """
-        
-        # Execute the query with the given Product ID as a parameter
-        results = self.db_connector.execute_query(query, (product_id,))
-        
-        if results:
-            return results[0][0]  # Return the first result's 'NumberOfItemsSold'
-        else:
-            return 0  # No data found, return 0
+    return products
 
-# Example usage:
+# Function to randomly select one row and return relevant information
+def select_random_product(products):
+    selected_product = random.choice(products)
+    
+    product_id = selected_product['ProductID']
+    description = selected_product['Description']
+    manufacturer_id = selected_product['ManufacturerID']
+    brand_id = selected_product['BrandID']
+    
+    return product_id, description, manufacturer_id, brand_id
 
-# Initialize the database connection
-db_connector = DatabaseConnector()
-db_connector.connect()
+# Function for Question 6: Fetch the total number of items sold for a specific ProductID
+def get_items_sold_for_product(product_id):
+    conn = connect_to_sql_server()
+    cursor = conn.cursor()
+    
+    query = """
+    SELECT TOP (100) PERCENT 
+        SUM(dbo.tTransactionDetail.QtyOfProduct) AS NumberOfItemsSold
+    FROM dbo.tTransactionDetail 
+    INNER JOIN dbo.tTransaction 
+        ON dbo.tTransactionDetail.TransactionID = dbo.tTransaction.TransactionID 
+    WHERE dbo.tTransaction.TransactionTypeID = 1 
+        AND dbo.tTransactionDetail.ProductID = ?
+    """
+    cursor.execute(query, (product_id,))
+    result = cursor.fetchone()
+    
+    # If result is not None, return the total items sold, otherwise return 0
+    number_of_items_sold = result[0] if result else 0
+    
+    cursor.close()
+    conn.close()
 
-# Initialize ProductManager with the database connector
-product_manager = ProductManager(db_connector)
+    return number_of_items_sold
 
-# Example: Substitute Product ID (replace with an actual ID)
-product_id = 12345  # Replace with the actual Product ID you want to query
 
-# Fetch the total quantity sold for the given product ID
-total_sold = product_manager.fetch_total_sold_by_product(product_id)
+ 
 
-# Print the result
-print(f"Total number of items sold for Product ID {product_id}: {total_sold}")
 
-# Close the connection after use
-db_connector.close_connection()
+
     
     
