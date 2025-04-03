@@ -16,7 +16,6 @@ import random
 from RApackage.module1 import *
 
 def connect_to_sql_server():
-    # Replace with your actual SQL Server details
     conn = pyodbc.connect('Driver={SQL Server};'
                           'Server=lcb-sql.uccob.uc.edu\\nicholdw;'
                           'Database=GroceryStoreSimulator;'
@@ -24,7 +23,6 @@ def connect_to_sql_server():
                           'pwd=P@ssword2;')
     return conn
 
-# Function to run the query for Question 1 and return the results
 def get_product_data():
     conn = connect_to_sql_server()
     cursor = conn.cursor()
@@ -36,12 +34,11 @@ def get_product_data():
     cursor.execute(query)
     results = cursor.fetchall()
     
-    # Convert to a list of dictionaries for easier access
     products = []
     for row in results:
         products.append({
             'ProductID': row.ProductID,
-            'UPC-A': row[1],  # Assuming the second column is UPC-A
+            'UPC-A': row[1], 
             'Description': row.Description,
             'ManufacturerID': row.ManufacturerID,
             'BrandID': row.BrandID
@@ -51,7 +48,6 @@ def get_product_data():
 
     return products
 
-# Function to randomly select one row and return relevant information
 def select_random_product(products):
     selected_product = random.choice(products)
     
@@ -62,7 +58,6 @@ def select_random_product(products):
     
     return product_id, description, manufacturer_id, brand_id
 
-# Function for Question 6: Fetch the total number of items sold for a specific ProductID
 def get_items_sold_for_product(product_id):
     conn = connect_to_sql_server()
     cursor = conn.cursor()

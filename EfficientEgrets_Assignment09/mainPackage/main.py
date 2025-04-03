@@ -76,7 +76,6 @@ def main():
     manufacturer_name = "Acme Corp"  
     brand_name = "SuperBrand"        
     
-    # Build the grammatically correct sentence
     sentence = (f"The product '{description}' from {manufacturer_name} "
                 f"and brand {brand_name} has sold {number_of_items_sold} units.")
     
